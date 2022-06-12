@@ -1,5 +1,5 @@
 from random import randint
-from time import sleep
+import time
 
 #initialise empty 9 by 9 grid
 # 
@@ -84,8 +84,13 @@ def solveGrid(grid):
   
 
 #FIN DE TIEMPO
-
+start= time.time()
+print("inicio del time")
 solved = solveGrid(matriz)
+end=time.time()
+print("final de time",end-start)
+
+
 if solved:
   print("Sudoku tiene solucion")
 else:  
