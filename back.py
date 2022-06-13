@@ -14,7 +14,7 @@ with open("sudoku.txt","r") as archivo:
       matriz.append(result.copy())
       result.clear()
 
-
+#Imprime matriz
 def printMatriz(matriz):
     for fila in range(0,9):
         for columna in range(0,9):
@@ -27,12 +27,10 @@ def verificarMatriz(matriz):
       for columna in range(0,9):
         if matriz[fila][columna]==0:
           return False
-
   return True 
 
 #BACKTRACCKING
 
-#INICIO
 
 def backtracking(m):
   for i in range(0,81):
@@ -47,11 +45,10 @@ def backtracking(m):
         if not(val in m[fila]):
           aux = []
           for k in range(0,9,1):
-            print(m[k][columna])
             aux.append(m[k][columna])
 
           if not val in (aux):
-            #Identify which of the 9 squares we are working on
+            
             grupo3x3=[]
             if fila<3:
               if columna<3:
@@ -74,11 +71,11 @@ def backtracking(m):
                 grupo3x3=[m[i][3:6] for i in range(6,9)]
               else:  
                 grupo3x3=[m[i][6:9] for i in range(6,9)]
-            #Check that this value has not already be used on this 3x3 square
+
+            # Si valor no esta en los grupos, se inserta en m[f][]
             if not val in (grupo3x3[0] + grupo3x3[1] + grupo3x3[2]):
               m[fila][columna]=val          
               if verificarMatriz(m):
-                print("")
                 return True
               else:
                 if backtracking(m):
@@ -92,7 +89,7 @@ def backtracking(m):
 start= time.time()
 solved = backtracking(matriz)
 end=time.time()
-print("Tiempo backtracking: ",end-start)
+
   
 if solved:
   print("Sudoku tiene solucion")
@@ -100,3 +97,5 @@ else:
   print("No se puede resolver el sudoku")
 
 printMatriz(matriz)
+
+print("Tiempo backtracking: ",end-start)
