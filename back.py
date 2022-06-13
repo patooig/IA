@@ -1,19 +1,18 @@
 from random import randint
 import time
 
-#initialise empty 9 by 9 grid
-# 
+matriz = [] #Matriz
+result = []
+#Abrir archivo
+A=1
+with open("sudoku.txt","r") as archivo:
+    for linea in archivo:
+      
+      for i in range(0, len(linea)-1, A):
+        result.append(int(linea[i : i + A]))
 
-matriz = []
-matriz.append([5, 8, 6, 0, 7, 0, 0, 0, 0])
-matriz.append([0, 0, 0, 9, 0, 1, 6, 0, 0])
-matriz.append([0, 0, 0, 6, 0, 0, 0, 0, 0])
-matriz.append([0, 0, 7, 0, 0, 0, 0, 0, 0])
-matriz.append([9, 0, 2, 0, 1, 0, 3, 0, 5])
-matriz.append([0, 0, 5, 0, 9, 0, 0, 0, 0])
-matriz.append([0, 9, 0, 0, 4, 0, 0, 0, 8])
-matriz.append([0, 0, 3, 5, 0, 0, 0, 6, 0])
-matriz.append([0, 0, 0, 0, 2, 0, 4, 7, 0])
+      matriz.append(result.copy())
+      result.clear()
 
 
 def printMatriz(matriz):
@@ -21,9 +20,8 @@ def printMatriz(matriz):
         for columna in range(0,9):
             print(matriz[fila][columna], end=" ")
         print()
-    print()
 
-#A function to check if the grid is full
+#Verifica si existe un 0, si existe es pq matriz no tuvo soluciòn
 def verificarMatriz(matriz):
   for fila in range(0,9):
       for columna in range(0,9):
@@ -36,61 +34,66 @@ def verificarMatriz(matriz):
 
 #INICIO
 
-def solveGrid(grid):
+def backtracking(m):
   for i in range(0,81):
+
     fila=i//9      #Divisiòn entera
     columna=i%9    #Resto de divisiòn
-    if grid[fila][columna]==0:
-      for val in range (1,10):
-        #Check that this value has not already be used on this row
-        if not(val in grid[fila]):
-          #Check that this value has not already be used on this column
-          if not val in (grid[0][columna],grid[1][columna],grid[2][columna],grid[3][columna],grid[4][columna],grid[5][columna],grid[6][columna],grid[7][columna],grid[8][columna]):
+    
+    if m[fila][columna]==0:
+
+      for val in range (1,10,1):
+
+        if not(val in m[fila]):
+          aux = []
+          for k in range(0,9,1):
+            print(m[k][columna])
+            aux.append(m[k][columna])
+
+          if not val in (aux):
             #Identify which of the 9 squares we are working on
-            square=[]
+            grupo3x3=[]
             if fila<3:
               if columna<3:
-                square=[grid[i][0:3] for i in range(0,3)]
+                grupo3x3=[m[i][0:3] for i in range(0,3)]
               elif columna<6:
-                square=[grid[i][3:6] for i in range(0,3)]
+                grupo3x3=[m[i][3:6] for i in range(0,3)]
               else:  
-                square=[grid[i][6:9] for i in range(0,3)]
+                grupo3x3=[m[i][6:9] for i in range(0,3)]
             elif fila<6:
               if columna<3:
-                square=[grid[i][0:3] for i in range(3,6)]
+                grupo3x3=[m[i][0:3] for i in range(3,6)]
               elif columna<6:
-                square=[grid[i][3:6] for i in range(3,6)]
+                grupo3x3=[m[i][3:6] for i in range(3,6)]
               else:  
-                square=[grid[i][6:9] for i in range(3,6)]
+                grupo3x3=[m[i][6:9] for i in range(3,6)]
             else:
               if columna<3:
-                square=[grid[i][0:3] for i in range(6,9)]
+                grupo3x3=[m[i][0:3] for i in range(6,9)]
               elif columna<6:
-                square=[grid[i][3:6] for i in range(6,9)]
+                grupo3x3=[m[i][3:6] for i in range(6,9)]
               else:  
-                square=[grid[i][6:9] for i in range(6,9)]
+                grupo3x3=[m[i][6:9] for i in range(6,9)]
             #Check that this value has not already be used on this 3x3 square
-            if not val in (square[0] + square[1] + square[2]):
-              grid[fila][columna]=val          
-              if verificarMatriz(grid):
-                print("Grid Complete and Checked")
+            if not val in (grupo3x3[0] + grupo3x3[1] + grupo3x3[2]):
+              m[fila][columna]=val          
+              if verificarMatriz(m):
+                print("")
                 return True
               else:
-                if solveGrid(grid):
+                if backtracking(m):
                   return True
       break
-  print("Backtrack")
-  grid[fila][columna]=0  
+  #Volver atràs
+  m[fila][columna]=0  
   
 
-#FIN DE TIEMPO
+#CÀLCULO TIEMPO DE EJECUCIÒN ALGORITMO DE BÙSQUEDA BACKTRACKING
 start= time.time()
-print("inicio del time")
-solved = solveGrid(matriz)
+solved = backtracking(matriz)
 end=time.time()
-print("final de time",end-start)
-
-
+print("Tiempo backtracking: ",end-start)
+  
 if solved:
   print("Sudoku tiene solucion")
 else:  
